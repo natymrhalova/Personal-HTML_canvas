@@ -35,11 +35,9 @@ window.addEventListener("load", () => {
 });
 
 window.addEventListener("resize", () => {
-
     const canvas = document.getElementById("canvas");
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
-
 });
 
 let clearCanvas = () => {
