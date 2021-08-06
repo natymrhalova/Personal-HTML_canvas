@@ -78,20 +78,20 @@ const enemies = [];
 
 let spawnEnemies = () => {
     setInterval(() => {
-        const x_axis = 100
-        const y_axis = 100
-        const radius = 30
+        const x = Math.random() * canvas.width
+        const y = 100
+        const radius = Math.random() * 30 + 3;
         const color = "green"
 
-        const angle = Math.atan2(y - y_axis, x - x_axis)
+        const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
 
         const velocity = {
             x: Math.cos(angle),
             y: Math.sin(angle)
         }
 
-        enemies.push(new Enemy(x_axis, y_axis, radius, color, velocity))
-    }, 1000)
+        enemies.push(new Enemy(x, y, radius, color, velocity))
+    }, 2000)
 }
 
 let animate = () => {
