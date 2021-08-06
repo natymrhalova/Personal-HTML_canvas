@@ -3,10 +3,11 @@ const canvas = document.querySelector("canvas");
 //Giant API object which allows us to work with it and layer on it
 const ctx = canvas.getContext("2d");
 
-//innerWidht ang height are properties of an window object
+//innerWidth ang height are properties of an window object
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+//Specifiing a player constructor
 class Player {
     constructor(x, y, radius, color) {
         this.x = x;
@@ -80,7 +81,7 @@ let spawnEnemies = () => {
     setInterval(() => {
         const x = Math.random() * canvas.width
         const y = 100
-        const radius = Math.random() * 30 + 3;
+        const radius = Math.random() * (45 - 10) + 10;
         const color = "green"
 
         const angle = Math.atan2(canvas.height / 2 - y, canvas.width / 2 - x)
@@ -91,19 +92,44 @@ let spawnEnemies = () => {
         }
 
         enemies.push(new Enemy(x, y, radius, color, velocity))
-    }, 2000)
+    }, 1500)
 }
 
+let animationId
+
 let animate = () => {
-    requestAnimationFrame(animate)
+    animationId = requestAnimationFrame(animate)
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.draw()
-    projectiles.forEach((projectile) => {
+    projectiles.forEach((projectile, index) => {
         projectile.update()
+        //remove projectiles of the screen
+        if (projectile.x + projectile.radius < 0 || projectile.x - projectile.radius > canvas.width || projectile.y + projectile.radius < 0 || projectile.y - projectile.radius > canvas.height) {
+            setTimeout(() => {
+                projectiles.splice(index, 1)
+            }, 0)
+        }
     })
 
-    enemies.forEach((enemy) => {
+    enemies.forEach((enemy, index) => {
         enemy.update()
+
+        //End game when an enemy touches a player
+        const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
+        if (dist - enemy.radius - player.radius < 1) {
+            cancelAnimationFrame(animationId)
+        }
+
+        projectiles.forEach((projectile, projectileIndex) => {
+            const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
+
+            if (dist - enemy.radius - projectile.radius < 1) {
+                setTimeout(() => {
+                    enemies.splice(index, 1)
+                    projectiles.splice(projectileIndex, 1)
+                }, 0)
+            }
+        })
     })
 
 }
