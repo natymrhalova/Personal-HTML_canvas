@@ -1,7 +1,8 @@
 window.addEventListener("load", () => {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    console.log("Boooija")
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
 
     let painting = false;
 
@@ -18,6 +19,7 @@ window.addEventListener("load", () => {
         if (!painting) return;
         ctx.lineWidth = 10;
         ctx.lineCap = "round";
+        ctx.strokeStyle = "beige";
 
         ctx.lineTo(e.clientX, e.clientY);
         ctx.stroke();
@@ -39,3 +41,12 @@ window.addEventListener("resize", () => {
     canvas.width = window.innerWidth;
 
 });
+
+let clearCanvas = () => {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+}
+
+document.getElementById("button").addEventListener("click", clearCanvas)
