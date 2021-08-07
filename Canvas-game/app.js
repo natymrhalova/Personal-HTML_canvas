@@ -7,7 +7,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
-//Specifiing a player constructor
+//Specifiing a player constructor because we need to draw a new player everytime
 class Player {
     constructor(x, y, radius, color) {
         this.x = x;
@@ -16,6 +16,7 @@ class Player {
         this.color = color;
     }
 
+    //draws a player circle everytime a function is called
     draw() {
         ctx.beginPath()
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
@@ -24,6 +25,7 @@ class Player {
     }
 }
 
+//Projectile constructor to draw mutliple projectiles
 class Projectile {
     constructor(x, y, radius, color, velocity) {
         this.x = x
@@ -38,6 +40,7 @@ class Projectile {
         ctx.fillStyle = this.color
         ctx.fill()
     }
+    //Updates a new projectile
     update() {
         this.draw()
         this.x = this.x + this.velocity.x
@@ -45,6 +48,7 @@ class Projectile {
     }
 }
 
+//enemy constructor to create a new Enemy after 1500 miliseconds. Set in a setTimeout function
 class Enemy {
     constructor(x, y, radius, color, velocity) {
         this.x = x
@@ -66,15 +70,19 @@ class Enemy {
     }
 }
 
+//Used in multiple ocassions to center a player or a projectile etc. 
 const x = canvas.width / 2;
 const y = canvas.height / 2;
 
+//Creates a new player based on player constructor
 const player = new Player(x, y, 30, "white")
 player.draw()
 
+//Everytime time 
 const projectiles = [];
 const enemies = [];
 
+//Creates new enemy every 1500 seconds from a random angle with random radius
 let spawnEnemies = () => {
     setInterval(() => {
         const x = Math.random() * canvas.width
@@ -95,6 +103,7 @@ let spawnEnemies = () => {
 
 let animationId
 
+//Request a new animation frame and creates new enemies and updates projectiles
 let animate = () => {
     animationId = requestAnimationFrame(animate)
     ctx.fillStyle = "rgba(0,0,0, 0.1)"
@@ -122,7 +131,7 @@ let animate = () => {
         projectiles.forEach((projectile, projectileIndex) => {
             const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y)
 
-            //When projectiles touches enemy
+            //When projectiles touches enemy that projectile and that enemy are splice from an enemy and projectile array to erase them from screen
             if (dist - enemy.radius - projectile.radius < 1) {
 
                 if (enemy.radius - 20 > 10) {
@@ -143,12 +152,17 @@ let animate = () => {
     })
 }
 
+//Creates a new projectile after mouse click
 addEventListener("click", (e) => {
+
+    //Counts an angle in which the porjectile is supposed to fire - where the mouse was click
     const angle = Math.atan2(e.clientY - y, e.clientX - x)
     const velocity = {
         x: Math.cos(angle) * 5,
         y: Math.sin(angle) * 5
     }
+
+    //Pushes new projectile to projectiles array which is looped through everytime a new screen is animated
     projectiles.push(
         new Projectile(x, y, 5, "white", velocity)
     )
