@@ -2,4 +2,56 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
+
+body{
+  background: black;
+}
+
+div {
+    position: fixed;
+    color: white;
+    margin: 2%;
+    font-size: 2rem;
+}
+
+span {
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;  
+}
+
+.fixed {
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bg{
+  background-color: white;
+  padding: 1rem 3rem;
+  width: 50%;
+  height: auto;
+}
+
+h1, p{
+  color: #333;
+  text-align: center;
+  font-size: bold;
+}
+
+button{
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  background-color: rgb(39, 185, 225);
+  border: none;
+  width: 100%;
+  border-radius: 30px;
+  color: white;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+

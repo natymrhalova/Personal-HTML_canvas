@@ -1,6 +1,11 @@
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 
+const scoreEl = document.querySelector("#scoreEl");
+const startGameBtn = document.querySelector("button");
+const modalEl = document.querySelector("#modalEl");
+const bigScroreEl = document.querySelector("h1");
+
 //innerWidth ang height are properties of an window object
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -68,38 +73,27 @@ class Enemy {
     }
 }
 
-class Particle {
-    constructor(x, y, radius, color, velocity) {
-        this.x = x
-        this.y = y
-        this.radius = radius
-        this.color = color
-        this.velocity = velocity
-    }
-    draw() {
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
-        ctx.fillStyle = this.color
-        ctx.fill()
-    }
-    update() {
-        this.draw()
-        this.x = this.x + this.velocity.x
-        this.y = this.y + this.velocity.y
-    }
-}
 
 //Used in multiple ocassions to center a player or a projectile etc. 
 const x = canvas.width / 2;
 const y = canvas.height / 2;
 
 //Creates a new player based on player constructor
-const player = new Player(x, y, 30, "white")
+let player = new Player(x, y, 30, "white")
+let projectiles = [];
+let enemies = [];
+
 player.draw()
 
-//Everytime time 
-const projectiles = [];
-const enemies = [];
+let init = () => {
+    player = new Player(x, y, 30, "white")
+    projectiles = [];
+    enemies = [];
+
+    score = 0
+    scoreEl.innerHTML = score
+    bigScroreEl.innerHTML = score
+}
 
 //Creates new enemy every 1500 seconds from a random angle with random radius
 let spawnEnemies = () => {
@@ -121,6 +115,7 @@ let spawnEnemies = () => {
 }
 
 let animationId
+let score = 0
 
 //Request a new animation frame and creates new enemies and updates projectiles
 let animate = () => {
@@ -145,6 +140,8 @@ let animate = () => {
         const dist = Math.hypot(player.x - enemy.x, player.y - enemy.y)
         if (dist - enemy.radius - player.radius < 1) {
             cancelAnimationFrame(animationId)
+            modalEl.style.display = "flex";
+            bigScroreEl.innerHTML = score;
         }
 
         projectiles.forEach((projectile, projectileIndex) => {
@@ -153,10 +150,11 @@ let animate = () => {
             //When projectiles touches enemy that projectile and that enemy are splice from an enemy and projectile array to erase them from screen
             if (dist - enemy.radius - projectile.radius < 1) {
 
-                if (enemy.radius - 20 > 5) {
-                    gsap.setTimeout(enemy, {
-                        radius: enemy.radius - 10
-                    })
+                //Increase score 
+                score += 100
+                scoreEl.innerHTML = score
+
+                if (enemy.radius - 20 > 10) {
                     enemy.radius -= 10
                     setTimeout(() => {
                         projectiles.splice(projectileIndex, 1)
@@ -175,7 +173,7 @@ let animate = () => {
 //Creates a new projectile after mouse click
 addEventListener("click", (e) => {
 
-    //Counts an angle in which the porjectile is supposed to fire - where the mouse was click
+    //Counts an angle in which the porjectile is supposed to fire - where the mouse was clicked
     const angle = Math.atan2(e.clientY - y, e.clientX - x)
     const velocity = {
         x: Math.cos(angle) * 5,
@@ -188,7 +186,12 @@ addEventListener("click", (e) => {
     )
 })
 
-animate()
-spawnEnemies()
+startGameBtn.addEventListener("click", () => {
+    init()
+    animate()
+    spawnEnemies()
+
+    modalEl.style.display = "none"
+})
 
 
