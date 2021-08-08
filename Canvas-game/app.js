@@ -1,6 +1,4 @@
 const canvas = document.querySelector("canvas");
-
-//Giant API object which allows us to work with it and layer on it
 const ctx = canvas.getContext("2d");
 
 //innerWidth ang height are properties of an window object
@@ -70,6 +68,27 @@ class Enemy {
     }
 }
 
+class Particle {
+    constructor(x, y, radius, color, velocity) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.color = color
+        this.velocity = velocity
+    }
+    draw() {
+        ctx.beginPath()
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false)
+        ctx.fillStyle = this.color
+        ctx.fill()
+    }
+    update() {
+        this.draw()
+        this.x = this.x + this.velocity.x
+        this.y = this.y + this.velocity.y
+    }
+}
+
 //Used in multiple ocassions to center a player or a projectile etc. 
 const x = canvas.width / 2;
 const y = canvas.height / 2;
@@ -85,8 +104,8 @@ const enemies = [];
 //Creates new enemy every 1500 seconds from a random angle with random radius
 let spawnEnemies = () => {
     setInterval(() => {
-        const x = Math.random() * canvas.width
-        const y = 100
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
         const radius = Math.random() * (45 - 10) + 10;
         const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
 
@@ -134,7 +153,10 @@ let animate = () => {
             //When projectiles touches enemy that projectile and that enemy are splice from an enemy and projectile array to erase them from screen
             if (dist - enemy.radius - projectile.radius < 1) {
 
-                if (enemy.radius - 20 > 10) {
+                if (enemy.radius - 20 > 5) {
+                    gsap.setTimeout(enemy, {
+                        radius: enemy.radius - 10
+                    })
                     enemy.radius -= 10
                     setTimeout(() => {
                         projectiles.splice(projectileIndex, 1)
@@ -144,9 +166,7 @@ let animate = () => {
                         enemies.splice(index, 1)
                         projectiles.splice(projectileIndex, 1)
                     }, 0)
-
                 }
-
             }
         })
     })
